@@ -1,7 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { request } from 'http';
 import IActivitiesObject from '../Models/IActivitiesObject';
-import { resolve } from 'dns';
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 

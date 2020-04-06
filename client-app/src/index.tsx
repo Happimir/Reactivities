@@ -1,35 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App/Layout/App';
 import './App/Layout/styles.css';
 import * as serviceWorker from './serviceWorker';
 import {
     BrowserRouter,
-    Switch,
     Route,
-    Link
+    Link,
+    NavLink
   } from "react-router-dom";
   import Activities from './App/Layout/Activities';
   import ValuesComponent from './Components/ValuesComponent';
 import { Menu, Image } from 'semantic-ui-react';
+import { HomePage } from './Features/home/HomePage';
 
 const routing = (
     <BrowserRouter>
         <Menu fixed='top' inverted>
-            <Menu.Item header>
-                <Link to="/">
+            <Menu.Item header as={NavLink} exact to ="/">
                     <Image src="/assets/logo.png" alt="logo" size="mini">
-                    </Image>
-                </Link>   
+                    </Image>  
             </Menu.Item>
-            <Menu.Item name="Activities">
-                <Link to="/activities">Activities</Link>
+            <Menu.Item name="Activities" as={NavLink} to="/activities">
+                Activities
             </Menu.Item>
-            <Menu.Item name="Values">
-                <Link to="/values">Values</Link>
+            <Menu.Item name="Values" as={NavLink} to="/values">
+                Values
             </Menu.Item>
         </Menu>
-        <Route exact path="/" component={App}/>
+        <Route exact path="/" component={HomePage}/>
         <Route path="/values" component={ValuesComponent}/>
         <Route path="/activities" component={Activities}/>
   </BrowserRouter>

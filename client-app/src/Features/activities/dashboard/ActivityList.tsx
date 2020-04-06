@@ -1,35 +1,32 @@
-import React, {useState, useEffect, Fragment, SyntheticEvent} from 'react'
+import React, {useState, useEffect, Fragment, useContext} from 'react'
 import { Item, Button, Label, Segment, Search } from 'semantic-ui-react'
-import IActivitiesObject from '../../../App/Models/IActivitiesObject'
+import { observer } from 'mobx-react-lite';
+import activityStore from '../../../App/stores/activityStore';
+import { Link} from 'react-router-dom';
 
-interface IProps {
-    activities: IActivitiesObject[];
-    selectActivity : (id : string) => void;
-    setEditMode : (editMode: boolean) => void;
-    deleteActivity : (event: SyntheticEvent<HTMLButtonElement>, id : string) => void;
-    submitting : boolean,
-    target : string 
-}
 
-export const ActivityList : React.FC<IProps> = ({activities, selectActivity, setEditMode, deleteActivity, submitting, target}) => {
+const ActivityList : React.FC = () => {
 
     const[search, updateSearch] = useState<string>("");
     
+    const store = useContext(activityStore);
+    const {selectActivity, activitiesByDate, deleteActivity, submitting, target} = store;
+
     useEffect(() => {
         updateSearch(search);
     }, [search]);
 
-    let myActivities = activities.filter((x) => {
-        return (x.city.toLowerCase().indexOf(search.toLowerCase()) !== -1 || search == "")
+    let myActivities = activitiesByDate.filter((x) => {
+        return (x.city.toLowerCase().indexOf(search.toLowerCase()) !== -1 || search === "")
     });
 
     function handleSearch(event : any) {
-        setEditMode(false);
         selectActivity("");
         updateSearch(event.target.value.substr(0, 20));
     }
 
     return (
+
         <Fragment>
             <Search 
                 value={search}
@@ -47,15 +44,18 @@ export const ActivityList : React.FC<IProps> = ({activities, selectActivity, set
                                 <div>{activity.city}, {activity.venue}</div>
                             </Item.Description>
                             <Item.Extra>
-                                <Button onClick={() => {selectActivity(activity.id); setEditMode(false)}} floated="right" content="View" color="blue"></Button>
-                                <Button name={activity.id} onClick={(e) => {deleteActivity(e, activity.id)}} loading={target === activity.id && submitting} floated="right" negative content="Delete"/>
+                                <Button as={Link} to={`/activities/${activity.id}`} floated="right" color="blue" content="View" />
+                                <Button name={activity.id} onClick={(e) => deleteActivity(e, activity.id)} loading={target === activity.id && submitting} floated="right" negative content="Delete"/>
                                 <Label basic content={activity.category}></Label>
                             </Item.Extra>
                         </Item.Content>
                     </Item>
+                    
                     ))}    
                 </Item.Group>
             </Segment> 
         </Fragment>
     )
 }
+
+export default observer(ActivityList)

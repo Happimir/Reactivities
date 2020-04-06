@@ -19,3 +19,7 @@ body {
 .ui.clearing.segment .ui.divided.items .item.selected {
     background-color: #4CAF50;
 }
+
+.ui.positive.button a {
+  color: white;
+}

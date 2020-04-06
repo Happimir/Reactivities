@@ -1,109 +1,38 @@
-import React, {useState, useEffect, Fragment, SyntheticEvent} from 'react';
+import React, {useEffect, Fragment, useContext} from 'react';
 import './styles.css';
-import IActivitiesObject from '../Models/IActivitiesObject';
 import {Container} from 'semantic-ui-react'
 import NavBar from '../../Features/Nav/NavBar';
-import { ActivityDashboard } from '../../Features/activities/dashboard/ActivityDashboard';
-import agent from '../api/agent';
-import { LoadingComponent } from './LoadingComponent';
+import ActivityDashboard  from '../../Features/activities/dashboard/ActivityDashboard';
+import ActivityStore from '../stores/activityStore';
+import {LoadingComponent} from './LoadingComponent';
+import {observer} from 'mobx-react-lite'
+import {v4 as uuid} from 'uuid'
+import { Route } from 'react-router-dom';
+import { HomePage } from '../../Features/home/HomePage';
+import ActivityForm from '../../Features/activities/form/ActivityForm';
+import ActivityDetails from '../../Features/activities/details/ActivityDetails';
 
 const Activities = () => {
     
-    const [activities, setActivities] = useState<IActivitiesObject[]>([]);
-    const [selectedActivity, setSelectedActivity] = useState<IActivitiesObject | null>(null);
-    const [editMode, setEditMode] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [submitting, setSubmitting] = useState(false);
-    const [target, setTarget] = useState('');
+    const activityStore = useContext(ActivityStore)
 
-    const handleOpenCreateForm = () => {
-        setSelectedActivity(null);
-        setEditMode(true);
-    }
+    useEffect(() => {;
+       activityStore.loadActivities();   
+    }, [activityStore]); 
 
-    const handleSelectActivity = (id: string) => {
-        if(id === "") {
-            setSelectedActivity(null);
-            return;
-        }
-
-        setSelectedActivity(
-            activities.filter(x => x.id === id)[0]
-        );
-        setEditMode(false);
-    }
-
-    const handleCreateActivity = (activity : IActivitiesObject) => {
-        setSubmitting(true);
-        agent.Activities.create(activity)
-        .then(() => {
-            setActivities([...activities, activity]);
-            setSelectedActivity(activity);
-            setEditMode(false);
-        }, rejected => {
-            console.log("Rejected because: ", rejected);
-        }).then(x => setSubmitting(false))
-        
-
-    }
-
-    const handleEditActivity = (activity : IActivitiesObject) => {
-        setSubmitting(true);
-        agent.Activities.update(activity)
-        .then(() => {
-            setActivities([...activities.filter(a => a.id !== activity.id), activity]);
-            setSelectedActivity(activity);
-            setEditMode(false);
-        }, rejected => {
-            console.log("Rejected because: ", rejected);
-        }).then(x => setSubmitting(false));
-        
-    }
-
-    const handleDeleteActivity = (event : SyntheticEvent<HTMLButtonElement> ,id: string) => {
-        setSubmitting(true);
-        setTarget(event.currentTarget.name);
-        agent.Activities.delete(id)
-        .then(() => {
-            setActivities([...activities.filter(a => a.id !== id)]);
-        }, rejected => {
-            console.log("Rejected because: ", rejected);
-        }).then(x => setSubmitting(false))
-    }
-
-    useEffect(() => {
-        agent.Activities.list()
-        .then((response) => {
-            let activities : IActivitiesObject[] = [];
-            response.forEach(activity => {
-                activity.date = activity.date.split('.')[0];
-                activities.push(activity);
-            });
-            setActivities(activities);
-        }).then(() => setLoading(false));
-    }, []); //empty array ensures that it is only run once
-
-    if(loading) return <LoadingComponent content='Loading activities...'/>
+    if(activityStore.loadingInitial) return <LoadingComponent content='Loading selected activity...'/>
 
     return (
-        <Fragment>
+        <Fragment key={uuid()}>
             <Container>
-            <ActivityDashboard 
-                activities = {activities} 
-                selectActivity={handleSelectActivity}
-                selectedActivity={selectedActivity!}
-                editMode = {editMode}
-                setEditMode = {setEditMode}
-                createActivity = {handleCreateActivity}
-                editActivity = {handleEditActivity}
-                deleteActivity = {handleDeleteActivity}
-                submitting = {submitting}
-                target = {target}
-                />
+                <Route exact path='/' component={HomePage}/>
+                <Route exact path='/activities' component={ActivityDashboard}/>
+                <Route path='/activities/:id' component={ActivityDetails}/>          
+                <Route path='/create' component={ActivityForm}/>
             </Container>
-            <NavBar openCreateForm={handleOpenCreateForm}/>
+            <NavBar />
         </Fragment>
     )
 }
 
-export default Activities;
+export default observer(Activities);

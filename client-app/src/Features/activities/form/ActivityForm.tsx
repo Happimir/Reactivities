@@ -1,18 +1,17 @@
-import React, {useState, FormEvent} from 'react'
-import { Segment, Form, Button } from 'semantic-ui-react'
+import React, {useState, FormEvent, useContext} from 'react'
+import { Segment, Form, Button, Container } from 'semantic-ui-react'
 import IActivitiesObject from '../../../App/Models/IActivitiesObject'
 import {v4 as uuid} from 'uuid'
+import activityStore from '../../../App/stores/activityStore'
+import { observer } from 'mobx-react-lite'
+import { Redirect } from 'react-router-dom'
 
-interface IProps {
-    setEditMode : (editMode: boolean) => void;
-    activity: IActivitiesObject;
-    createActivity : (activity : IActivitiesObject) => void;
-    editActivity : (activity : IActivitiesObject) => void;
-    submitting : boolean;
-}
+const ActivityForm : React.FC = () => {
 
-export const ActivityForm :React.FC<IProps> = ({setEditMode, activity : initialformState, createActivity, editActivity, submitting}) => {
-
+    console.log("in activity");
+    const [moveAway, setMoveAway] = useState(false);
+    const store = useContext(activityStore);
+    const {activity : initialformState, createActivity, editActivity, submitting, selectActivity} = store;
     const initializeForm = () => {
         if(initialformState) {
             return initialformState;
@@ -32,15 +31,23 @@ export const ActivityForm :React.FC<IProps> = ({setEditMode, activity : initialf
     const [activity, setActivity] = useState<IActivitiesObject>(initializeForm);
 
     const handleSubmit = () => {
+        
         if(activity.id.length === 0) {
             let newActivity = {
                 ...activity,
                 id: uuid()
             };
 
-            createActivity(newActivity);
+            createActivity(newActivity)
+            .then(() => {
+                setMoveAway(true);
+            });
+            
         } else {
-            editActivity(activity);
+            editActivity(activity)
+            .then(() => {
+                setMoveAway(true);
+            });
         }
     }
 
@@ -49,8 +56,13 @@ export const ActivityForm :React.FC<IProps> = ({setEditMode, activity : initialf
         setActivity({...activity, [name] : value});
     }
 
+    if(moveAway) {
+        return <Redirect to='/activities'/>
+    }
+    
     return (
-        <Segment clearing>
+        <Container>
+            <Segment clearing>
             <Form onSubmit={handleSubmit}>
                 <Form.Input placeholder = "Title" name="title" value={activity.title} onChange={handleInputChange}/>
                 <Form.TextArea placeholder = "Description" name="description" rows={2} value={activity.description} onChange={handleInputChange}/>
@@ -60,8 +72,12 @@ export const ActivityForm :React.FC<IProps> = ({setEditMode, activity : initialf
                 <Form.Input placeholder = "Venue" name="venue" value={activity.venue} onChange={handleInputChange}/>
                 
                 <Button floated='right' loading={submitting} positive type='submit' content='Submit'/>
-                <Button floated='left' type='submit' content='Cancel' onClick={() => setEditMode(false)}/>
+                <Button floated='left' type="button" name="cancel" content='Cancel' onClick={() => setMoveAway(true)}/>
             </Form>
-        </Segment>
+            </Segment>  
+        </Container>
+            
     )
 }
+
+export default observer(ActivityForm);

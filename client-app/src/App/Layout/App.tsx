@@ -1,7 +1,5 @@
-import React, {Component} from 'react';
-import axios from 'axios'
+import React from 'react';
 import './styles.css';
-import {Header, Icon, List, Container} from 'semantic-ui-react'
 
 const App = () => {
 

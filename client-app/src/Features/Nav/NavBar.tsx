@@ -1,21 +1,27 @@
-import React from 'react';
-import {Menu, Container, Button, Image} from 'semantic-ui-react'
+import React, { useContext, Fragment } from 'react';
+import {Menu, Button} from 'semantic-ui-react'
+import activityStore from '../../App/stores/activityStore';
+import { observer } from 'mobx-react-lite';
+import { Switch, Route, Link } from 'react-router-dom';
+import ActivityForm from '../activities/form/ActivityForm';
 
-interface IProps {
-    openCreateForm: () => void;
-}
+const NavBar = () => {
 
-const NavBar :React.FC<IProps> = ({openCreateForm}) => {
+    const store = useContext(activityStore);
+    const {openCreateForm} = store;
 
     return (
-        <Menu fixed='bottom' inverted>
-            <Menu.Item name='Activities'/>
+        <Fragment>
+            <Menu fixed='bottom' inverted>
             <Menu.Item>
-                <Button positive content="Create" onClick={openCreateForm}></Button>
+                <Button positive>
+                    <Link to="/create">Create</Link>
+                </Button>
             </Menu.Item>      
-        </Menu>
+            </Menu>
+        </Fragment>
       )
 }
 
-export default NavBar;
+export default observer(NavBar);
 
