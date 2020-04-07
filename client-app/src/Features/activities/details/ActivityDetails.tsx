@@ -2,30 +2,26 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Card, Image, Button } from 'semantic-ui-react'
 import activityStore from '../../../App/stores/activityStore'
 import { observer } from 'mobx-react-lite'
-import { useParams, RouteComponentProps, Redirect } from 'react-router-dom'
+import { useParams, RouteComponentProps, Redirect, Link } from 'react-router-dom'
 import { LoadingComponent } from '../../../App/Layout/LoadingComponent'
 
 interface DetailParams {
   id: string;
 }
 
-const ActivityDetails : React.FC<RouteComponentProps<DetailParams>> = ({match}) => {
+const ActivityDetails : React.FC<RouteComponentProps<DetailParams>> = ({match, history}) => {
 
     const store = useContext(activityStore);
-    const {activity, selectActivity, loadActivity, loadingInitial} = store;
-    const [moveAway, setMoveAway] = useState(false);
+    const {activity, loadActivity, loadingInitial} = store;
 
     useEffect(() => {
       loadActivity(match.params.id)
     }, [loadActivity])
 
+    console.log("My activity is: ", activity);
     if(loadingInitial || !activity) {
       return <LoadingComponent content='Loading selected activity...'/>
     }
-
-    if(moveAway) {
-      return <Redirect to='/activities'/>
-  }
 
     return (
         <Card fluid>
@@ -41,8 +37,8 @@ const ActivityDetails : React.FC<RouteComponentProps<DetailParams>> = ({match}) 
         </Card.Content>
         <Card.Content extra>
           <Button.Group widths={2}>
-              <Button basic onClick={() => selectActivity(activity!.id, true)} color='blue' content='Edit'/>
-              <Button basic onClick={() => setMoveAway(true)} color='grey' content='Cancel'/>
+              <Button basic as={Link} to={`/manage/${activity.id}`} color='blue' content='Edit'/>
+              <Button basic onClick={() => history.push("/activities")} color='grey' content='Cancel'/>
           </Button.Group>
         </Card.Content>
       </Card>

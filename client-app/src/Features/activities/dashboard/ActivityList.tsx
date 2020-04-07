@@ -10,7 +10,7 @@ const ActivityList : React.FC = () => {
     const[search, updateSearch] = useState<string>("");
     
     const store = useContext(activityStore);
-    const {selectActivity, activitiesByDate, deleteActivity, submitting, target} = store;
+    const {activitiesByDate, deleteActivity, submitting, target} = store;
 
     useEffect(() => {
         updateSearch(search);
@@ -21,7 +21,6 @@ const ActivityList : React.FC = () => {
     });
 
     function handleSearch(event : any) {
-        selectActivity("");
         updateSearch(event.target.value.substr(0, 20));
     }
 

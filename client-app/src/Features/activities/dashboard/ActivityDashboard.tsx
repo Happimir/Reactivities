@@ -8,9 +8,6 @@ import activityStore from '../../../App/stores/activityStore'
 
 const ActivityDashboard : React.FC = () => {
 
-        const store = useContext(activityStore);
-        const {editMode, activity} = store;
-
     return (
         <Grid>
             <Grid.Column width={10}>
