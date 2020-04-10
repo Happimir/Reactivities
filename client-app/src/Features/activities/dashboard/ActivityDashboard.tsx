@@ -1,10 +1,7 @@
-import React, { useContext } from 'react'
-import { Grid } from 'semantic-ui-react'
-import  ActivityList  from './ActivityList'
-import ActivityDetails  from '../details/ActivityDetails'
-import ActivityForm from '../form/ActivityForm'
+import React from 'react';
+import { Grid } from 'semantic-ui-react';
+import  ActivityList  from './ActivityList';
 import {observer} from 'mobx-react-lite';
-import activityStore from '../../../App/stores/activityStore'
 
 const ActivityDashboard : React.FC = () => {
 

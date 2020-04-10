@@ -6,7 +6,6 @@ import ActivityDashboard  from '../../Features/activities/dashboard/ActivityDash
 import ActivityStore from '../stores/activityStore';
 import {LoadingComponent} from './LoadingComponent';
 import {observer} from 'mobx-react-lite'
-import {v4 as uuid} from 'uuid'
 import { Route, withRouter, RouteComponentProps } from 'react-router-dom';
 import { HomePage } from '../../Features/home/HomePage';
 import ActivityForm from '../../Features/activities/form/ActivityForm';
@@ -24,14 +23,20 @@ const Activities : React.FC<RouteComponentProps> = ({location}) => {
 
     return (
         <Fragment>
-            <NavBar />
-            <Container>
-                <Route exact path='/' component={HomePage}/>
-                <Route exact path='/activities' component={ActivityDashboard}/>
-                <Route path='/activities/:id' component={ActivityDetails}/>          
-                {/* This bit of code seems to literally do nothing, odd as the one above is fully functional */}
-                <Route key={location.key} path={['/createActivity', '/manage/:id']} component={ActivityForm}/>
-            </Container>
+            <Route exact path='/' component={HomePage}/>
+            <Route path={'/(.+)'} render={() => 
+                <Fragment>
+                    <NavBar />
+                    <Container>
+
+                        <Route exact path='/activities' component={ActivityDashboard}/>
+                        <Route path='/activities/:id' component={ActivityDetails}/>          
+                        {/* This bit of code seems to literally do nothing, odd as the one above is fully functional */}
+                        <Route key={location.key} path={['/createActivity', '/manage/:id']} component={ActivityForm}/>
+                    </Container>
+                </Fragment>
+            }/>
+            
         </Fragment>
     )
 }

@@ -6,11 +6,14 @@ import {
     BrowserRouter
   } from "react-router-dom";
   import Activities from './App/Layout/Activities';
+import ScrollToTop from './App/Layout/ScrollToTop';
 
 
 ReactDOM.render(
 <BrowserRouter>
+  <ScrollToTop>
     <Activities />
+  </ScrollToTop> 
 </BrowserRouter>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
