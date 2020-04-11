@@ -1,20 +1,30 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'react-toastify/dist/ReactToastify.min.css';
 import './App/Layout/styles.css';
+import {createBrowserHistory} from 'history';
 import * as serviceWorker from './serviceWorker';
 import {
-    BrowserRouter
+    Router
   } from "react-router-dom";
-  import Activities from './App/Layout/Activities';
 import ScrollToTop from './App/Layout/ScrollToTop';
+import Activities from './App/Layout/Activities';
+import { ToastContainer } from 'react-toastify';
 
+
+export const history = createBrowserHistory();
 
 ReactDOM.render(
-<BrowserRouter>
-  <ScrollToTop>
-    <Activities />
-  </ScrollToTop> 
-</BrowserRouter>, document.getElementById('root'));
+  <Router history={history}>
+    <ToastContainer position='bottom-right'>
+      
+    </ToastContainer>
+    <ScrollToTop>
+      <Activities />
+    </ScrollToTop>
+  </Router>,
+  document.getElementById('root')
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

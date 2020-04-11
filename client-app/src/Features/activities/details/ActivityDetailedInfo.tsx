@@ -1,7 +1,6 @@
 import React from 'react'
 import IActivitiesObject from '../../../App/Models/IActivitiesObject';
 import { Segment, Grid, Icon } from 'semantic-ui-react';
-import { observer } from 'mobx-react-lite';
 
 const ActivityDetailedInfo : React.FC<{activity : IActivitiesObject}>= ({activity}) => {
     return (
@@ -42,4 +41,4 @@ const ActivityDetailedInfo : React.FC<{activity : IActivitiesObject}>= ({activit
     )
 }
 
-export default observer(ActivityDetailedInfo);
+export default ActivityDetailedInfo;

@@ -1,42 +1,33 @@
-import React, {useEffect, Fragment, useContext} from 'react';
+import React, {Fragment} from 'react';
 import './styles.css';
 import {Container} from 'semantic-ui-react'
 import NavBar from '../../Features/Nav/NavBar';
 import ActivityDashboard  from '../../Features/activities/dashboard/ActivityDashboard';
-import ActivityStore from '../stores/activityStore';
-import {LoadingComponent} from './LoadingComponent';
 import {observer} from 'mobx-react-lite'
-import { Route, withRouter, RouteComponentProps } from 'react-router-dom';
+import { Route, withRouter, RouteComponentProps, Switch } from 'react-router-dom';
 import { HomePage } from '../../Features/home/HomePage';
 import ActivityForm from '../../Features/activities/form/ActivityForm';
 import ActivityDetails from '../../Features/activities/details/ActivityDetails';
+import NotFound from './NotFound';
 
 const Activities : React.FC<RouteComponentProps> = ({location}) => {
     
-    const activityStore = useContext(ActivityStore)
-
-    useEffect(() => {;
-       activityStore.loadActivities();   
-    }, [activityStore]); 
-
-    if(activityStore.loadingInitial) return <LoadingComponent content='Loading selected activity...'/>
-
     return (
         <Fragment>
-            <Route exact path='/' component={HomePage}/>
-            <Route path={'/(.+)'} render={() => 
-                <Fragment>
-                    <NavBar />
-                    <Container>
-
-                        <Route exact path='/activities' component={ActivityDashboard}/>
-                        <Route path='/activities/:id' component={ActivityDetails}/>          
-                        {/* This bit of code seems to literally do nothing, odd as the one above is fully functional */}
-                        <Route key={location.key} path={['/createActivity', '/manage/:id']} component={ActivityForm}/>
-                    </Container>
-                </Fragment>
-            }/>
-            
+                <Route exact path='/' component={HomePage}/>
+                <Route path={'/(.+)'} render={() => 
+                    <Fragment>
+                        <NavBar />
+                        <Container>
+                            <Switch>
+                                <Route exact path='/activities' component={ActivityDashboard}/>
+                                <Route path='/activities/:id' component={ActivityDetails}/>          
+                                <Route key={location.key} path={['/createActivity', '/manage/:id']} component={ActivityForm}/>
+                                <Route component={NotFound}/>
+                            </Switch>  
+                        </Container>
+                    </Fragment>
+                }/>
         </Fragment>
     )
 }

@@ -62,13 +62,13 @@ class ActivityStore {
         runInAction('get activity error', () => {
           this.loadingInitial = false;
         })
+        
         console.log(error);
       }
     }
   }
 
   @action clearActivity = () => {
-    console.log("Activity before clearing is: ", this.activity);
     this.activity = null;
   }
 
