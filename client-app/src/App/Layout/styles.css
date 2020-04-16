@@ -31,9 +31,8 @@ body {
   align-items: center;
   background-image: linear-gradient(
           135deg,
-          rgb(24, 42, 115) 0%,
-          rgb(33, 138, 174) 69%,
-          rgb(32, 167, 172) 89%
+          rgb(27, 22, 24) 29%,
+          rgb(132, 157, 158) 89%
   ) !important;
   height: 100vh;
 }
